@@ -180,12 +180,16 @@
     const fail = document.getElementById('fail');
     const musicBtn = document.getElementById('musicBtn');
 
-    let selectedCells = [];
     let grid = [];
     let selectedWords = [];
     let foundWords = [];
     let gridSize = 10;
     let wordCount = 10;
+
+    // Seleção dinâmica
+    let isSelecting = false;
+    let startCell = null; // {r,c,el}
+    let selectedCells = [];
 
     startBtn.onclick = () => {
       startBtn.classList.add('hidden');
@@ -214,7 +218,7 @@
       selectedWords = wordsByTheme[theme].slice(0, wordCount);
       foundWords = [];
       createGrid();
-      music.play(); // música começa aqui, quando o jogo inicia
+      music.play();
       musicBtn.textContent = "⏸️ Pausar Música";
     }
 
@@ -288,41 +292,51 @@
           cell.textContent = letter;
           cell.dataset.row = r;
           cell.dataset.col = c;
-          cell.ontouchstart = selectStart;
-          cell.ontouchmove = selectMove;
-          cell.ontouchend = selectEnd;
+
+          // Eventos para toque e mouse
+          cell.addEventListener('touchstart', selectStart);
+          cell.addEventListener('touchmove', selectMove);
+          cell.addEventListener('touchend', selectEnd);
+
+          cell.addEventListener('mousedown', selectStart);
+          cell.addEventListener('mousemove', selectMove);
+          cell.addEventListener('mouseup', selectEnd);
+
           gridDiv.appendChild(cell);
         });
       });
     }
 
     function selectStart(e) {
-      selectedCells = [];
-      handleTouch(e);
+      e.preventDefault();
+      const cell = getCellFromEvent(e);
+      if (!cell) return;
+      isSelecting = true;
+      startCell = cell;
+      updateSelection(cell);
     }
 
     function selectMove(e) {
-      handleTouch(e);
+      if (!isSelecting) return;
+      e.preventDefault();
+      const cell = getCellFromEvent(e);
+      if (!cell) return;
+      updateSelection(cell);
     }
 
-    function handleTouch(e) {
-      const touch = e.touches[0];
-      const target = document.elementFromPoint(touch.clientX, touch.clientY);
-      if (target && target.classList.contains('cell')) {
-        const r = +target.dataset.row;
-        const c = +target.dataset.col;
-        const key = `${r}-${c}`;
-        if (!selectedCells.find(cell => cell.key === key)) {
-          selectedCells.push({ r, c, key, el: target });
-          target.classList.add('selected');
-        }
+    function selectEnd(e) {
+      if (!isSelecting) return;
+      e.preventDefault();
+      isSelecting = false;
+      if (selectedCells.length === 0) {
+        clearSelection();
+        return;
       }
-    }
 
-    function selectEnd() {
       const word = selectedCells.map(c => grid[c.r][c.c]).join('');
       const reversed = word.split('').reverse().join('');
       const match = selectedWords.find(w => (w === word || w === reversed) && !foundWords.includes(w));
+
       if (match) {
         selectedCells.forEach(c => c.el.classList.replace('selected', 'correct'));
         document.getElementById('word-' + match).classList.add('found');
@@ -332,9 +346,66 @@
           alert("Parabéns! Você encontrou todas as palavras!");
         }
       } else {
-        selectedCells.forEach(c => c.el.classList.remove('selected'));
         fail.play();
+        clearSelection();
       }
+
+      startCell = null;
+      selectedCells = [];
+    }
+
+    // Pega célula pelo evento (mouse ou toque)
+    function getCellFromEvent(e) {
+      const point = e.touches ? e.touches[0] : e;
+      const target = document.elementFromPoint(point.clientX, point.clientY);
+      if (!target || !target.classList.contains('cell')) return null;
+
+      const r = +target.dataset.row;
+      const c = +target.dataset.col;
+      return { r, c, el: target };
+    }
+
+    // Atualiza seleção entre startCell e cell numa linha reta horizontal, vertical ou diagonal
+    function updateSelection(cell) {
+      if (!startCell) return;
+
+      const dr = cell.r - startCell.r;
+      const dc = cell.c - startCell.c;
+
+      function normalize(n) {
+        if (n === 0) return 0;
+        return n > 0 ? 1 : -1;
+      }
+
+      const ndR = normalize(dr);
+      const ndC = normalize(dc);
+
+      // Valida se a direção é horizontal, vertical ou diagonal perfeita
+      if (ndR !== 0 && ndC !== 0 && Math.abs(dr) !== Math.abs(dc)) {
+        // direção inválida (não reta diagonal)
+        return;
+      }
+
+      clearSelection();
+      selectedCells = [];
+
+      let steps = Math.max(Math.abs(dr), Math.abs(dc));
+      for (let i = 0; i <= steps; i++) {
+        const rr = startCell.r + ndR * i;
+        const cc = startCell.c + ndC * i;
+
+        if (rr < 0 || rr >= gridSize || cc < 0 || cc >= gridSize) break;
+
+        const el = gridDiv.querySelector(`.cell[data-row="${rr}"][data-col="${cc}"]`);
+        if (el) {
+          el.classList.add('selected');
+          selectedCells.push({ r: rr, c: cc, el });
+        }
+      }
+    }
+
+    function clearSelection() {
+      selectedCells.forEach(c => c.el.classList.remove('selected'));
       selectedCells = [];
     }
 
@@ -349,4 +420,4 @@
     }
   </script>
 </body>
-</html>
+  </html>
