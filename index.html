@@ -295,6 +295,7 @@
   
     let isSelecting = false;  
     let startCell = null;  
+    lastCellCoords = null;
     let selectedCells = [];  
   
     function loadScore() {  
@@ -413,17 +414,19 @@ function updateSelection(cell) {
 
     const el = gridDiv.querySelector(`.cell[data-row="${rr}"][data-col="${cc}"]`);
     if (el) {
-      // só toca o som se a letra ainda não foi selecionada
-      if (!el.classList.contains('selected')) {
-        bubbleSound.currentTime = 0;
-        bubbleSound.play();
-      }
-
       el.classList.add('selected');
       selectedCells.push({ r: rr, c: cc, el });
+
+      const cellCoords = `${rr},${cc}`;
+      if (cellCoords !== lastCellCoords) {
+        bubbleSound.currentTime = 0;
+        bubbleSound.play();
+        lastCellCoords = cellCoords; // atualiza
+      }
     }
   }
-    }
+}
+
     function updateScore() {  
       scoreEl.textContent = `Pontuação: ${score}`;  
       saveScore();  
@@ -543,7 +546,8 @@ function updateSelection(cell) {
     function selectEnd(e) {  
       if (!isSelecting) return;  
       e.preventDefault();  
-      isSelecting = false;  
+      isSelecting = false; 
+      lastCellCoords = null;
       if (selectedCells.length === 0) {  
         clearSelection();  
         return;  
