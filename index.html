@@ -381,7 +381,10 @@ const bubbleSound = document.getElementById('bubbleSound');
       music.play();  
       musicBtn.textContent = "Pausar Música";  
     }  
-  
+  function playBubbleSound() {
+  new Audio('bolha.mp3').play();
+    }
+function updateSelection(cell) {
 function updateSelection(cell) {
   if (!startCell) return;
 
@@ -404,7 +407,6 @@ function updateSelection(cell) {
   selectedCells = [];
 
   let steps = Math.max(Math.abs(dr), Math.abs(dc));
-  const bubbleSound = document.getElementById('bubbleSound');
 
   for (let i = 0; i <= steps; i++) {
     const rr = startCell.r + ndR * i;
@@ -419,13 +421,12 @@ function updateSelection(cell) {
 
       const cellCoords = `${rr},${cc}`;
       if (cellCoords !== lastCellCoords) {
-        bubbleSound.currentTime = 0;
-        bubbleSound.play();
+        playBubbleSound();
         lastCellCoords = cellCoords; // atualiza
       }
     }
   }
-}
+    }
 
     function updateScore() {  
       scoreEl.textContent = `Pontuação: ${score}`;  
