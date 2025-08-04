@@ -383,6 +383,7 @@ const bubbleSound = document.getElementById('bubbleSound');
   
 function updateSelection(cell) {
   if (!startCell) return;
+
   const dr = cell.r - startCell.r;
   const dc = cell.c - startCell.c;
 
@@ -404,8 +405,6 @@ function updateSelection(cell) {
   let steps = Math.max(Math.abs(dr), Math.abs(dc));
   const bubbleSound = document.getElementById('bubbleSound');
 
-  let somTocado = false; // controle para tocar só uma vez
-
   for (let i = 0; i <= steps; i++) {
     const rr = startCell.r + ndR * i;
     const cc = startCell.c + ndC * i;
@@ -414,14 +413,14 @@ function updateSelection(cell) {
 
     const el = gridDiv.querySelector(`.cell[data-row="${rr}"][data-col="${cc}"]`);
     if (el) {
-      el.classList.add('selected');
-      selectedCells.push({ r: rr, c: cc, el });
-
-      if (!somTocado) {
+      // só toca o som se a letra ainda não foi selecionada
+      if (!el.classList.contains('selected')) {
         bubbleSound.currentTime = 0;
         bubbleSound.play();
-        somTocado = true;
       }
+
+      el.classList.add('selected');
+      selectedCells.push({ r: rr, c: cc, el });
     }
   }
     }
