@@ -402,7 +402,9 @@ function updateSelection(cell) {
   selectedCells = [];
 
   let steps = Math.max(Math.abs(dr), Math.abs(dc));
-  const bubbleSound = document.getElementById('bubbleSound'); // <-- aqui
+  const bubbleSound = document.getElementById('bubbleSound');
+
+  let somTocado = false; // controle para tocar só uma vez
 
   for (let i = 0; i <= steps; i++) {
     const rr = startCell.r + ndR * i;
@@ -413,12 +415,16 @@ function updateSelection(cell) {
     const el = gridDiv.querySelector(`.cell[data-row="${rr}"][data-col="${cc}"]`);
     if (el) {
       el.classList.add('selected');
-      bubbleSound.currentTime = 0;
-      bubbleSound.play();
       selectedCells.push({ r: rr, c: cc, el });
+
+      if (!somTocado) {
+        bubbleSound.currentTime = 0;
+        bubbleSound.play();
+        somTocado = true;
+      }
     }
   }
-}
+    }
     function updateScore() {  
       scoreEl.textContent = `Pontuação: ${score}`;  
       saveScore();  
