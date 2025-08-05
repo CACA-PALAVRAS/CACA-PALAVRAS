@@ -232,6 +232,45 @@
     </div>
   </div>
 
+  
+
+<div id="updateModal" style="
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  text-align: center;
+  padding: 20px;
+">
+  <button id="closeUpdateModal" style="
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 1.7rem;
+    background: none;
+    color: white;
+    border: none;
+    cursor: pointer;
+    z-index: 10000;
+  ">✖</button>
+
+  <h2 style="font-size: 2rem;">🎉 Bem-vindo a versão 3.0 do Caça-Palavras do tutyxs!</h2>
+  <p style="max-width: 500px; margin-top: 15px; font-size: 1.1rem;">
+    Agora o jogo está mais completo do que nunca! Veja as novidades:
+    <br><br>
+    ✅ Escolher wallpaper personalizado<br>
+    ✅ Troca de temas com apenas um clique<br>
+    ✅ Botão para trocar música<br>
+    ✅ Várias músicas disponíveis pra você curtir 🎵<br>
+    ✅ Sistema de pontuação com níveis<br>
+    ✅ Avance de fase ao encontrar todas as palavras 💪
+  </p>
+</div>
 
   <!-- Botão para abrir o catálogo -->
   <button id="trocarMusicaBtn" class="hidden">🎵 Trocar Música</button>
@@ -900,6 +939,17 @@ uploadInput.addEventListener('change', function () {
 colorThemeBtn.addEventListener('click', () => {
   currentThemeIndex = (currentThemeIndex + 1) % colorThemes.length;
   applyTheme(colorThemes[currentThemeIndex]);
+});
+
+    window.addEventListener('DOMContentLoaded', () => {
+  if (!localStorage.getItem('versaoTutyxs3_0')) {
+    document.getElementById('updateModal').style.display = 'flex';
+  }
+});
+
+document.getElementById('closeUpdateModal').addEventListener('click', () => {
+  document.getElementById('updateModal').style.display = 'none';
+  localStorage.setItem('versaoTutyxs3_0', 'true');
 });
     // Sons estão em arquivos musica1.mp3, musica2.mp3, musica3.mp3, success.mp3, fail.mp3, bolha.mp3
     // Para testar som bolha: bubbleSound.play();
