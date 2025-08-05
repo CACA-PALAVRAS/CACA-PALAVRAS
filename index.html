@@ -778,36 +778,33 @@ const colorThemes = [
     scoreText: '#aaaaaa',
     wordText: 'white'
   }
-  {
-  // 5. Tema com imagem de fundo (a.jpn)
-  backgroundImage: 'a.jpg',
-  grid: 'rgba(0, 0, 0, 0.5)',     // transparente pra aparecer a imagem
-  cell: 'rgba(0, 0, 0, 0.6)',
-  selected: '#ffffff',
-  correct: '#00ffcc',
-  text: '#ffffff',
-  levelText: '#ffffff',
-  scoreText: '#ffffff',
-  wordText: '#ffffff'
-}
-];
 
-colorThemeBtn.onclick = () => {
-  currentThemeIndex = (currentThemeIndex + 1) % colorThemes.length;
-  applyTheme(colorThemes[currentThemeIndex]);
-};
+  {
+    // 5. Tema com imagem de fundo (a.jpg)
+    backgroundImage: 'a.jpg',
+    grid: 'rgba(0, 0, 0, 0.5)',
+    cell: 'rgba(0, 0, 0, 0.6)',
+    selected: '#ffffff',
+    correct: '#00ffcc',
+    text: '#ffffff',
+    levelText: '#ffffff',
+    scoreText: '#ffffff',
+    wordText: '#ffffff'
+  }
+];
 
 function applyTheme(theme) {
   if (theme.backgroundImage) {
-  document.body.style.backgroundImage = `url('${theme.backgroundImage}')`;
-  document.body.style.backgroundSize = 'cover';
-  document.body.style.backgroundPosition = 'center';
-  document.body.style.backgroundRepeat = 'no-repeat';
-  document.body.style.backgroundColor = ''; // limpa cor sólida
-} else {
-  document.body.style.background = theme.background;
-  document.body.style.backgroundImage = '';
-    }
+    document.body.style.backgroundImage = `url('${theme.backgroundImage}')`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    document.body.style.backgroundRepeat = 'no-repeat';
+    document.body.style.backgroundColor = '';
+  } else {
+    document.body.style.background = theme.background;
+    document.body.style.backgroundImage = '';
+  }
+
   document.body.style.color = theme.text;
 
   const gridEl = document.querySelector('.grid');
@@ -824,10 +821,9 @@ function applyTheme(theme) {
     btn.style.border = 'none';
   });
 
-  // Palavras a serem encontradas — sempre com texto branco
   document.querySelectorAll('.word-list span').forEach(span => {
     span.style.backgroundColor = theme.cell;
-    span.style.color = '#ffffff'; // FORÇA texto branco SEMPRE
+    span.style.color = '#ffffff'; // força branco
   });
 
   const levelBox = document.getElementById('level');
@@ -842,33 +838,28 @@ function applyTheme(theme) {
     scoreBox.style.color = theme.scoreText ?? theme.text;
   }
 
-  // Limpa estilos antigos de seleção/correção
   const oldStyle = document.getElementById('dynamic-theme-style');
   if (oldStyle) oldStyle.remove();
 
-  // Seleção e acerto
   const style = document.createElement('style');
   style.id = 'dynamic-theme-style';
   style.innerHTML = `
     .selected {
       background-color: ${theme.selected} !important;
-      color: ${
-        currentThemeIndex === 2 ? '#ffffff' : theme.text
-      } !important; /* tema 3 (branco/preto), letras selecionadas ficam brancas */
+      color: ${theme.text === '#000000' ? '#ffffff' : theme.text} !important;
     }
 
     .correct {
       background-color: ${theme.correct} !important;
-      color: #ffffff !important; /* força texto branco nas letras corretas */
+      color: #ffffff !important;
     }
 
-    /* palavras a serem encontradas sempre texto branco */
     .word-list span {
       color: #ffffff !important;
     }
   `;
   document.head.appendChild(style);
-}
+    }
     // Sons estão em arquivos musica1.mp3, musica2.mp3, musica3.mp3, success.mp3, fail.mp3, bolha.mp3
     // Para testar som bolha: bubbleSound.play();
 
