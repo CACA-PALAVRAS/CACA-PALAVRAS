@@ -778,6 +778,18 @@ const colorThemes = [
     scoreText: '#aaaaaa',
     wordText: 'white'
   }
+  {
+  // 5. Tema com imagem de fundo (a.jpn)
+  backgroundImage: 'a.jpn',
+  grid: 'rgba(0, 0, 0, 0.5)',     // transparente pra aparecer a imagem
+  cell: 'rgba(0, 0, 0, 0.6)',
+  selected: '#ffffff',
+  correct: '#00ffcc',
+  text: '#ffffff',
+  levelText: '#ffffff',
+  scoreText: '#ffffff',
+  wordText: '#ffffff'
+}
 ];
 
 colorThemeBtn.onclick = () => {
@@ -786,7 +798,16 @@ colorThemeBtn.onclick = () => {
 };
 
 function applyTheme(theme) {
+  if (theme.backgroundImage) {
+  document.body.style.backgroundImage = `url('${theme.backgroundImage}')`;
+  document.body.style.backgroundSize = 'cover';
+  document.body.style.backgroundPosition = 'center';
+  document.body.style.backgroundRepeat = 'no-repeat';
+  document.body.style.backgroundColor = ''; // limpa cor sólida
+} else {
   document.body.style.background = theme.background;
+  document.body.style.backgroundImage = '';
+    }
   document.body.style.color = theme.text;
 
   const gridEl = document.querySelector('.grid');
