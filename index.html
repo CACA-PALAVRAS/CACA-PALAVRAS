@@ -784,16 +784,7 @@ const colorThemes = [
 
 function applyTheme(theme) {
   if (theme.backgroundImage) {
-    document.body.style.backgroundImage = `url('${theme.backgroundImage}')`;
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundPosition = 'center';
-    document.body.style.backgroundRepeat = 'no-repeat';
-    document.body.style.backgroundColor = '';
-  } else {
-    document.body.style.background = theme.background;
-    document.body.style.backgroundImage = '';
-  }
-
+  document.body.style.background = theme.background;
   document.body.style.color = theme.text;
 
   const gridEl = document.querySelector('.grid');
